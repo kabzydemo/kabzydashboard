@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Kabzy - Vehicle and Driver Stats Dashboard</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="../bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Timeline CSS -->
+    <link href="../dist/css/timeline.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="../bower_components/morrisjs/morris.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- Date range picker CSS -->
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+
+    <!-- Spinner overlay css -->
+   <link href="../dist/css/spinner.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+    
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">Kabzy Stats</a>
+            </div>
+            <!-- /.navbar-header -->
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <!-- <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        </li>
+                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        </li>
+                        <li class="divider"></li> -->
+                        <li onClick="logout();"><a href="#"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+
+             <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">   
+                        <!-- <li>
+                            <a href="index.html"><i class="fa fa-car fa-fw"></i> Live Fleet</a>
+                        </li>
+                        <li>
+                            <a href="trips.html"><i class="fa fa-globe fa-fw"></i> Trip Details</a>
+                        </li>
+                        <li>
+                            <a href="geo.html"><i class="fa fa-map-marker fa-fw"></i> Geo Fence</a>
+                        </li> -->
+                        <li>
+                            <a href="drivers.html"><i class="glyphicon glyphicon-user"></i> Driver Behaviour - Individual</a>
+                        </li>
+                        <li>
+                            <a href="drivers_bar.html"><i class="fa fa-car fa-fw"></i> Driver Behaviour - Fleet</a>
+                        </li>
+                        <!-- <li>
+                            <a href="fuel.html"><i class="fa fa-bar-chart-o fa-fw"></i> Fuel Monitoring</a>
+                        </li> -->
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <div id="page-wrapper">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Driver Behaviour - Individual</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+	            <!-- /.row -->
+            <div class="row">
+                <div class="panel panel-default">
+
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <form role="form">
+                                    <div class="form-group">
+                                        <label>Vehicles</label>
+                                        <select id="vehicleSelect" class="form-control" >
+                                        <option value="" selected disabled>Please select a driver</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- /.col-lg-6 (nested) -->
+                            <div class="col-lg-6">          
+                                <form role="form">
+                                    <div class="form-group"> 
+                                        <label>Select Dates</label>
+                                        <input id="datePicker" class="form-control" type="text" name="daterange"/> 
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- /.col-lg-6 (nested) -->
+                        </div>
+                        <!-- /.row -->
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <button type="button" class="btn btn-primary" onclick="updateGraphs()">Apply</button>
+                            </div>
+                        </div>
+                        <!-- /.col-lg-12 (nested) -->
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Driver Scores 
+                        </div>
+                        <div class="panel-body">
+
+                            <div class="row">
+                                <div class="loading" id="loadSpinner">Loading&#8230;</div>
+                                <div class="col-lg-6">
+                                    <div class="text-center">
+                                        <canvas id="safetyDonut"></canvas>
+                                        <div class="huge">Safety score</div>
+                                    </div>  
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="text-center">
+                                         <canvas id="ecoDonut"></canvas>
+                                        <div class="huge">Eco score</div>
+                                    </div>  
+                                   
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                 <div class="col-lg-12"  >
+                                        <div class="panel-heading">
+                                            <div class="row">   
+                                                <div class="text-center" >
+                                                    <div class="huge" id="distance">0 km travelled</div>
+                                                   
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+                            <!-- /.row -->
+                            <div class="row">
+                                <div class="col-lg-2">
+                                    <div class="text-center">
+                                        <canvas id="speedingDonut"></canvas>
+                                        <div ><h3>Speeding time</h3></div>
+                                    </div> 
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="text-center">
+                                        <canvas id="idleDonut"></canvas>
+                                        <div ><h3>Idle time</h3></div>
+                                    </div> 
+                                </div>
+                                <div class="col-lg-2" id="aggLane">
+                                    <div class="text-center">
+                                        <canvas id="aggLaneDonut"></canvas>
+                                        <div ><h3>Aggressive lane change</h3></div>
+                                    </div> 
+                                </div>
+                            
+                                <div class="col-lg-2" id="harshC">
+                                    <div class="text-center">
+                                        <canvas id="harshCDonut"></canvas>
+                                        <div><h3>Harsh cornering</h3></div>
+                                    </div> 
+                                </div>
+                                <div class="col-lg-2" id="harshB">
+                                    <div class="text-center">
+                                        <canvas id="harshBDonut"></canvas>
+                                        <div><h3>Harsh braking</h3></div>
+                                    </div> 
+                                </div>
+                                <div class="col-lg-2" id="harshA">
+                                    <div class="text-center">
+                                        <canvas id="harshADonut"></canvas>
+                                        <div><h3>Harsh acceleration</h3></div>
+                                    </div> 
+                                </div>
+                            </div>
+                            <!-- /.row -->
+                        </div>
+                    </div>
+                    <!-- /.panel -->  
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+
+           
+            
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="../bower_components/metisMenu/dist/metisMenu.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="../dist/js/sb-admin-2.js"></script>
+
+    <!-- Morris Charts JavaScript -->
+    <script src="../bower_components/raphael/raphael-min.js"></script>
+    <script src="../bower_components/morrisjs/morris.min.js"></script>
+
+    <!-- Chart.js -->
+    <script src="../bower_components/Chart.js/Chart.js"></script>
+    <script src="../dist/js/chart-scores.js"></script>
+ 
+
+    <!-- Moment.js -->
+    <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <!-- Include Date Range Picker -->
+    <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+    
+   <!-- Scripts to work with Kabzy API -->
+    <script type="text/javascript" src="../dist/js/kabzy.js"></script>
+    <script type="text/javascript" src="../dist/js/drivers.js"></script>
+
+</body>
+
+</html>
