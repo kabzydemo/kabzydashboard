@@ -4,7 +4,7 @@ A prototype dashboard displaying driver and Vehicle stats based on data retrieve
 
 ## Getting Started
 
-A live demo of this project is available at [http://kabzydashboard.site].
+A live demo of this project is available at [http://kabzydemo.github.io].
 
 To use this project locally run:
 ```
