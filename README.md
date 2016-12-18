@@ -4,14 +4,14 @@ A prototype dashboard displaying driver and Vehicle stats based on data retrieve
 
 ## Getting Started
 
-A live demo of this project is available at [http://kabzydemo.github.io].
+A live demo of this project is available at http://kabzydemo.github.io.
 
 To use this project locally run:
 ```
 npm install -g bower gulp-cli
 git clone https://github.com/kabzydemo/kabzydashboard.git
 cd kabzydashboard
-npm intall
+npm install
 bower install
 gulp
 
